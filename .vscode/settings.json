@@ -1,3 +1,10 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.fontSize": 12,
+  "editor.fontFamily": "Tenorite",
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.fontFamily": "Consolas",
+  "editor.letterSpacing": 0.6,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true
 }

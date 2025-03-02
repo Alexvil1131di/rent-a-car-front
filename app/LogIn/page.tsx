@@ -1,18 +1,23 @@
 "use client"
 import { Form, Input, Button } from "@heroui/react";
 import { useState } from "react";
+import withAuth from "@/components/withAuth";
+import { useLogin } from "./loginHooks/hook";
+import { toast } from "react-toastify";
 
 interface errorInterface {
-    name: string,
+    email: string,
     password: string,
     [key: string]: string
 }
 
-const Login = () => {
+const CreateClients = () => {
 
     const [password, setPassword] = useState("");
     const [submitted, setSubmitted] = useState<any>(null);
-    const [errors, setErrors] = useState<errorInterface | undefined>({ name: "", password: "" });
+    const [errors, setErrors] = useState<errorInterface | undefined>({ email: "", password: "" });
+
+    const { mutateAsync: logIn } = useLogin();
 
     // Real-time password validation
     const getPasswordError = (value: string) => {
@@ -34,7 +39,7 @@ const Login = () => {
         const data = Object.fromEntries(new FormData(e.currentTarget));
 
         // Custom validation checks
-        const newErrors: errorInterface = { name: "", password: "" };
+        const newErrors: errorInterface = { email: "", password: "" };
 
         // Password validation
         const passwordError = getPasswordError(data.password as string);
@@ -44,29 +49,35 @@ const Login = () => {
         }
 
         // Username validation
-        if (data.name === "admin") {
-            newErrors.name = "Nice try! Choose a different username";
+        if ((data.email as string).includes("admin")) {
+            newErrors.email = "Nice try! Choose a different username";
         }
 
-        if (Object.keys(newErrors).length > 0) {
+        if (newErrors.email || newErrors.password) {
             setErrors(newErrors);
 
-            return;
-        }
-
-        if (data.terms !== "true") {
-            setErrors((prev) => ({ ...prev, terms: "Please accept the terms", name: prev?.name || "", password: prev?.password || "" }));
-
-            return;
+            return true;
         }
 
         // Clear errors and submit
-        setErrors({ name: "", password: "" });
+        setErrors({ email: "", password: "" });
         setSubmitted(data);
+
+        return false
     };
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        errorHandle(e)
+        const error = errorHandle(e);
+        console.log(error)
+
+        if (error) return;
+        const data = Object.fromEntries(new FormData(e.currentTarget));
+        logIn({ email: String(data.email), password });
+        toast.promise(logIn({ email: String(data.email), password }), {
+            pending: "Loading...",
+            success: "Logged in successfully",
+            error: "Error logging in",
+        });
     }
 
     return (
@@ -77,39 +88,9 @@ const Login = () => {
             onSubmit={onSubmit}
         >
             <div className="flex flex-col gap-4 items-center max-w-md w-full">
-                <h2 className="text-[24px] font-semibold">Registrar Usuarios</h2>
-                <p>Ingresa la informacion solicitada para crear un usuario</p>
+                <h2 className="text-[24px] font-semibold">Iniciar Sesion</h2>
+                <p>Ingrese su correo electronico y contraseña</p>
                 <img src="https://cdn4.iconfinder.com/data/icons/airport-elements-1/64/CAR_HIRE-Hire-car-rent-travel-512.png" className="w-[150px] h-[150px] m-8 " alt="" />
-                <div className="flex items-center gap-2">
-                    <Input
-                        isRequired
-                        errorMessage={({ validationDetails }) => {
-                            if (validationDetails.valueMissing) {
-                                return "Please enter your first name";
-                            }
-
-                            return errors?.name;
-                        }}
-                        label="First Name"
-                        labelPlacement="outside"
-                        name="name"
-                        placeholder="Enter your name"
-                    />
-                    <Input
-                        isRequired
-                        errorMessage={({ validationDetails }) => {
-                            if (validationDetails.valueMissing) {
-                                return "Please enter your last name";
-                            }
-
-                            return errors?.name;
-                        }}
-                        label="Last Name"
-                        labelPlacement="outside"
-                        name="lastName"
-                        placeholder="Enter your last Name"
-                    />
-                </div>
 
 
                 <Input
@@ -155,13 +136,8 @@ const Login = () => {
                 </div>
             </div>
 
-            {submitted && (
-                <div className="text-small text-default-500 mt-4">
-                    Submitted data: <pre>{JSON.stringify(submitted, null, 2)}</pre>
-                </div>
-            )}
         </Form>
     );
 }
 
-export default Login
+export default withAuth(CreateClients)

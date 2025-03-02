@@ -10,7 +10,7 @@ export default function withAuth(Component: any) {
         token = true
 
         useEffect(() => {
-            if (!token) { redirect('/login') }
+            if (!token) { redirect('/LogIn') }
         }, [])
 
         if (!token) {
