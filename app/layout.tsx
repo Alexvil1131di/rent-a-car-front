@@ -1,13 +1,15 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode'; // Named import
 
 import { Providers } from "./providers";
 
 import { fontSans } from "@/config/fonts";
 import NavBarComponent from "@/components/navbar";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: {
     default: "Rent a car",
     template: `% Rent a car`,
@@ -24,6 +26,28 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
 };
+
+
+export function getTokenData() {
+  // Get the token from cookies
+  const token = Cookies.get(process.env.NEXT_PUBLIC_AUTH_KEY || 'f34bdb07-355f-477d-92d8-78041ac31f57');
+
+  if (!token) {
+    console.error('No token found in cookies');
+    return null;
+  }
+
+  try {
+    // Decode the token (no secret needed)
+    const decodedData = jwtDecode(token);
+    console.log('Decoded token data:', decodedData);
+    return decodedData as any;
+  } catch (err) {
+    console.error('Failed to decode token:', err);
+    return null;
+  }
+}
+
 
 export default function RootLayout({
   children,

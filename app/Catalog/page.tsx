@@ -2,18 +2,28 @@
 
 import React, { useState } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Chip, Tooltip, Button, useDisclosure, Input } from "@heroui/react";
-import withAuth from "@/components/withAuth";
+
 import { vehicleInterface, useGetVehicles } from "./catalogHooks/hook";
 import CreateClientModal from "./catalogComponents/Modal";
+
+import withAuth from "@/components/withAuth";
+import DateRangePicker from "./catalogComponents/DateRangePicker";
 
 export const columns = [
     { name: "BRAND", uid: "brand" },
     { name: "MODEL", uid: "model" },
     { name: "YEAR", uid: "year" },
+    { name: "STATUS", uid: "status" },
     { name: "LICENSE PLATE", uid: "licensePlate" },
     { name: "DAILY PRICE", uid: "dailyPrice" },
     { name: "ACTIONS", uid: "actions" },
 ];
+
+const statusColorMap: { [key: string]: "success" | "warning" | "danger" | "default" | "primary" | "secondary" | undefined } = {
+    AVAILABLE: "success",
+    RENTED: "warning",
+    MAINTENANCE: "danger",
+};
 
 export const EyeIcon = (props: any) => {
     return (
@@ -164,6 +174,12 @@ const Vehicles = () => {
                         {user.brand}
                     </User>
                 );
+            case "status":
+                return (
+                    <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
+                        {cellValue}
+                    </Chip>
+                );
             case "actions":
                 return (
                     <div className="relative flex items-center gap-2">
@@ -173,9 +189,9 @@ const Vehicles = () => {
                             </span>
                         </Tooltip>
                         <Tooltip content="Edit Vehicle">
-                            <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={() => { setEditedVehicle(user); onOpen(); }}>
+                            <button type="button" className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={() => { setEditedVehicle(user); onOpen(); }}>
                                 <EditIcon />
-                            </span>
+                            </button>
                         </Tooltip>
                     </div>
                 );

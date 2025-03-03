@@ -1,10 +1,17 @@
 "use client"
 
-import React, { useState } from "react";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Chip, Tooltip, Button, useDisclosure, Input } from "@heroui/react";
-import withAuth from "@/components/withAuth";
-import { clientInterface, useGetClients } from "./clientHooks/hook";
+import React, { useEffect, useState } from "react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Tooltip, Button, useDisclosure, Input } from "@heroui/react";
+import { useRouter } from "next/navigation";
+
+import { getTokenData } from "../layout";
+
+import { useGetClients } from "./clientHooks/hook";
 import CreateClientModal from "./clientComponents/Modal";
+
+import withAuth from "@/components/withAuth";
+
+
 
 export const columns = [
     { name: "NAME", uid: "name" },
@@ -145,6 +152,15 @@ const Clients = () => {
         client?.email?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
         client?.documentId?.toLowerCase()?.includes(searchQuery.toLowerCase())
     );
+    const router = useRouter();
+
+    useEffect(() => {
+
+        if (getTokenData().role !== "ADMIN") {
+            router.push("/Catalog");
+        }
+
+    }, []);
 
     const renderCell = React.useCallback((user: any, columnKey: any) => {
         const cellValue = user[columnKey];
@@ -184,7 +200,7 @@ const Clients = () => {
 
     return (
         <>
-            <CreateClientModal isOpen={isOpen} onOpen={onOpen} onOpenChange={onOpenChange} refetch={refetch} />
+            <CreateClientModal isOpen={isOpen} refetch={refetch} onOpen={onOpen} onOpenChange={onOpenChange} />
             <div className="flex justify-between mb-4">
                 <h1 className="text-3xl font-semibold">Clients</h1>
                 <Button color="primary" variant="flat" onPress={onOpen}>
@@ -192,10 +208,10 @@ const Clients = () => {
                 </Button>
             </div>
             <Input
+                className="mb-4"
                 placeholder="Search clients..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="mb-4"
             />
             {
                 isLoading ? (
