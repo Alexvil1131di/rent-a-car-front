@@ -53,7 +53,7 @@ const getVehicles = async (): Promise<vehicleInterface[]> => {
   ).then((res) => {
     return res.data;
   }).catch((err) => {
-    throw new Error('Error getting clients');
+    console.log('Error getting clients');
   });
   return response;
 }
@@ -68,7 +68,7 @@ const createVehicle = async (client: vehicleInterface) => {
   ).then((res) => {
     return res.data;
   }).catch((err) => {
-    throw new Error('Error creating client');
+    console.log('Error creating client');
   });
   return response;
 }
@@ -84,7 +84,7 @@ const updateVehicle = async ({ id, client }: { id: any, client: vehicleInterface
     return res.data;
   }
   ).catch((err) => {
-    throw new Error('Error updating client');
+    console.log('Error updating client');
   });
   return response;
 }
@@ -101,7 +101,7 @@ const getReservations = async (vehicleId: number): Promise<reservationDetailsInt
   ).then((res) => {
     return res.data;
   }).catch((err) => {
-    throw new Error('Error getting reservations');
+    console.log('Error getting reservations');
   });
   return response;
 }
@@ -116,7 +116,7 @@ const createReservation = async (reservation: reservationInterface) => {
   ).then((res) => {
     return res.data;
   }).catch((err) => {
-    throw new Error('Error creating reservation');
+    console.log('Error creating reservation');
   });
   return response;
 }
@@ -132,7 +132,7 @@ const updateReservationStatus = async ({ id, status }: { id: any, status: "CONFI
     return res.data;
   }
   ).catch((err) => {
-    throw new Error('Error updating reservation');
+    console.log('Error updating reservation');
   });
   return response;
 }

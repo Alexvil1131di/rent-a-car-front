@@ -157,6 +157,7 @@ const Vehicles = () => {
     const filteredData = data?.filter((client) =>
         client?.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         client?.model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client?.status?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         String(client.year).toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -183,11 +184,11 @@ const Vehicles = () => {
             case "actions":
                 return (
                     <div className="relative flex items-center gap-2">
-                        <Tooltip content="See Rent History">
+                        {/* <Tooltip content="See Rent History">
                             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                                 <EyeIcon />
                             </span>
-                        </Tooltip>
+                        </Tooltip> */}
                         <Tooltip content="Edit Vehicle">
                             <button type="button" className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={() => { setEditedVehicle(user); onOpen(); }}>
                                 <EditIcon />

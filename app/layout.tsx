@@ -33,7 +33,6 @@ export function getTokenData() {
   const token = Cookies.get(process.env.NEXT_PUBLIC_AUTH_KEY || 'f34bdb07-355f-477d-92d8-78041ac31f57');
 
   if (!token) {
-    console.error('No token found in cookies');
     return null;
   }
 
@@ -43,7 +42,6 @@ export function getTokenData() {
     console.log('Decoded token data:', decodedData);
     return decodedData as any;
   } catch (err) {
-    console.error('Failed to decode token:', err);
     return null;
   }
 }

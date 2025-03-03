@@ -77,7 +77,9 @@ const LogIn = () => {
             pending: "Loading...",
             success: "Logged in successfully",
             error: "Error logging in",
-        }).then(() => router.push("/Clients"))
+        }).then(() => {
+            window.location.href = "/Clients";
+        })
 
 
     }

@@ -9,6 +9,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   Link,
+  Button,
 } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/compat/router";
@@ -25,16 +26,25 @@ export const AcmeLogo = () => {
 
 const NavBarComponent = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuItems = ["Clients", "Catalog",];
+  const [isAuthenticated, setIsAuthenticated] = useState(!!Cookies.get(process.env.NEXT_PUBLIC_AUTH_KEY || "f34bdb07-355f-477d-92d8-78041ac31f57"));
+  const menuItems = ["Clients", "Catalog"];
+  const token = Cookies.get(process.env.NEXT_PUBLIC_AUTH_KEY || "f34bdb07-355f-477d-92d8-78041ac31f57");
 
   const router = useRouter(); // may be null or a NextRouter instance
 
   useEffect(() => {
     if (router && !router.isReady) { return; }
   }, [router]);
-  useEffect(() => {
 
-  }, [process.env.NEXT_PUBLIC_AUTH_KEY]);
+  useEffect(() => {
+    if (token) { return; }
+  }, [token]);
+
+  const handleLogout = () => {
+    Cookies.remove(process.env.NEXT_PUBLIC_AUTH_KEY || "f34bdb07-355f-477d-92d8-78041ac31f57");
+    setIsAuthenticated(false);
+    window.location.href = "/LogIn";
+  };
 
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen}>
@@ -50,31 +60,43 @@ const NavBarComponent = () => {
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        {getTokenData()?.role == "ADMIN" && <NavbarItem >
-          <Link color="foreground" href="/Clients">
-            Clients
-          </Link>
-        </NavbarItem>}
+        {isAuthenticated && getTokenData()?.role == "ADMIN" && (
+          <NavbarItem>
+            <Link color="foreground" href="/Clients">
+              Clients
+            </Link>
+          </NavbarItem>
+        )}
 
-        {<NavbarItem >
-          <Link color="foreground" href="/Catalog">
-            Catalog
-          </Link>
-        </NavbarItem>}
-
+        {isAuthenticated && (
+          <NavbarItem>
+            <Link color="foreground" href="/Catalog">
+              Catalog
+            </Link>
+          </NavbarItem>
+        )}
       </NavbarContent>
 
       <NavbarContent justify="end">
-
-        <NavbarItem >
-          <Link color="danger" href="/LogIn" type="button" onPress={() => { Cookies.remove(process.env.NEXT_PUBLIC_AUTH_KEY || "f34bdb07-355f-477d-92d8-78041ac31f57"); }}>LogOut</Link>
-        </NavbarItem>
-
+        {isAuthenticated ? (
+          <NavbarItem>
+            <Link color="danger" type="button" onPress={handleLogout}>
+              Log Out
+            </Link>
+          </NavbarItem>
+        ) : (
+          <NavbarItem>
+            <Link color="foreground" href="/LogIn">
+              Log In
+            </Link>
+          </NavbarItem>
+        )}
       </NavbarContent>
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
+              as={Button}
               className="w-full"
               color="foreground"
               href={`/${item}`}

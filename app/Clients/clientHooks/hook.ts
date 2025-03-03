@@ -23,7 +23,7 @@ const getClient = async (): Promise<clientInterface[]> => {
   ).then((res) => {
     return res.data;
   }).catch((err) => {
-    throw new Error('Error getting clients');
+    console.log('Error getting clients');
   });
   return response;
 }
@@ -42,7 +42,7 @@ const createClient = async (client: clientInterface) => {
   ).then((res) => {
     return res.data;
   }).catch((err) => {
-    throw new Error('Error creating client');
+    console.log('Error creating client');
   });
   return response;
 }

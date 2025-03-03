@@ -347,7 +347,7 @@ export default function CreateVehicleModal({ isOpen, onOpen, onOpenChange, refet
                     <h1 className="text-lg font-semibold mb-2">Reservations</h1>
 
                     <div className="overflow-x-auto">
-                      <table className="w-fit max-w-full table-auto overflow-x-scroll">
+                      <table className="w-full max-w-full table-auto overflow-x-scroll">
                         <thead>
                           <tr className="">
                             <th className="p-2 border">Client Email</th>
