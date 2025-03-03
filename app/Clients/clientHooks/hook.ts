@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { default as axios } from 'axios';
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 export interface clientInterface {
   id?: number;
@@ -49,4 +50,23 @@ const createClient = async (client: clientInterface) => {
 
 export const useCreateClient = () => {
   return useMutation({ mutationFn: createClient });
+}
+
+
+export function getTokenData() {
+  // Get the token from cookies
+  const token = Cookies.get(process.env.NEXT_PUBLIC_AUTH_KEY || 'f34bdb07-355f-477d-92d8-78041ac31f57');
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    // Decode the token (no secret needed)
+    const decodedData = jwtDecode(token);
+    console.log('Decoded token data:', decodedData);
+    return decodedData as any;
+  } catch (err) {
+    return null;
+  }
 }

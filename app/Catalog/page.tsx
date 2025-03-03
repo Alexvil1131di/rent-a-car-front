@@ -9,7 +9,7 @@ import CreateClientModal from "./catalogComponents/Modal";
 import withAuth from "@/components/withAuth";
 import DateRangePicker from "./catalogComponents/DateRangePicker";
 
-export const columns = [
+const columns = [
     { name: "BRAND", uid: "brand" },
     { name: "MODEL", uid: "model" },
     { name: "YEAR", uid: "year" },
@@ -25,7 +25,7 @@ const statusColorMap: { [key: string]: "success" | "warning" | "danger" | "defau
     MAINTENANCE: "danger",
 };
 
-export const EyeIcon = (props: any) => {
+const EyeIcon = (props: any) => {
     return (
         <svg
             aria-hidden="true"
@@ -55,7 +55,7 @@ export const EyeIcon = (props: any) => {
     );
 };
 
-export const DeleteIcon = (props: any) => {
+const DeleteIcon = (props: any) => {
     return (
         <svg
             aria-hidden="true"
@@ -106,7 +106,7 @@ export const DeleteIcon = (props: any) => {
     );
 };
 
-export const EditIcon = (props: any) => {
+const EditIcon = (props: any) => {
     return (
         <svg
             aria-hidden="true"

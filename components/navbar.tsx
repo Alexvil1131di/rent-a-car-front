@@ -16,7 +16,7 @@ import { useRouter } from "next/compat/router";
 import Cookies from "js-cookie";
 
 import withAuth from "./withAuth";
-import { getTokenData } from "@/app/layout";
+import { getTokenData } from "@/app/Clients/clientHooks/hook";
 
 export const AcmeLogo = () => {
   return (

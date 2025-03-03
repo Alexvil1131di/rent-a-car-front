@@ -4,16 +4,17 @@ import React, { useEffect, useState } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Tooltip, Button, useDisclosure, Input } from "@heroui/react";
 import { useRouter } from "next/navigation";
 
-import { getTokenData } from "../layout";
+import { getTokenData } from "./clientHooks/hook";
 
 import { useGetClients } from "./clientHooks/hook";
 import CreateClientModal from "./clientComponents/Modal";
 
 import withAuth from "@/components/withAuth";
+import ReservationsModal from "@/components/reservationModal";
 
 
 
-export const columns = [
+const columns = [
     { name: "NAME", uid: "name" },
     { name: "LAST NAME", uid: "lastName" },
     { name: "EMAIL", uid: "email" },
@@ -21,7 +22,7 @@ export const columns = [
     { name: "ACTIONS", uid: "actions" },
 ];
 
-export const EyeIcon = (props: any) => {
+const EyeIcon = (props: any) => {
     return (
         <svg
             aria-hidden="true"
@@ -51,7 +52,7 @@ export const EyeIcon = (props: any) => {
     );
 };
 
-export const DeleteIcon = (props: any) => {
+const DeleteIcon = (props: any) => {
     return (
         <svg
             aria-hidden="true"
@@ -102,7 +103,7 @@ export const DeleteIcon = (props: any) => {
     );
 };
 
-export const EditIcon = (props: any) => {
+const EditIcon = (props: any) => {
     return (
         <svg
             aria-hidden="true"
@@ -147,6 +148,9 @@ const Clients = () => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [searchQuery, setSearchQuery] = useState("");
 
+    const { isOpen: isReservationsOpen, onOpen: onReservationsOpen, onOpenChange: onReservationsOpenChange } = useDisclosure();
+    const [selectedReservations, setSelectedReservations] = useState<any[]>([]);
+
     const filteredData = data?.filter((client) =>
         client?.name?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
         client?.email?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
@@ -159,8 +163,11 @@ const Clients = () => {
         if (getTokenData().role !== "ADMIN") {
             router.push("/Catalog");
         }
+        console.log(data)
 
     }, []);
+
+
 
     const renderCell = React.useCallback((user: any, columnKey: any) => {
         const cellValue = user[columnKey];
@@ -187,7 +194,21 @@ const Clients = () => {
                 return (
                     <div className="relative flex items-center gap-2">
                         <Tooltip content="See Rent History">
-                            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                            <span
+                                className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => {
+                                    setSelectedReservations(user.reservations);
+                                    onReservationsOpen();
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        setSelectedReservations(user.reservations);
+                                        onReservationsOpen();
+                                    }
+                                }}
+                            >
                                 <EyeIcon />
                             </span>
                         </Tooltip>
@@ -235,6 +256,11 @@ const Clients = () => {
                     </Table>
                 )
             }
+            <ReservationsModal
+                isOpen={isReservationsOpen}
+                onOpenChange={onReservationsOpenChange}
+                reservations={selectedReservations}
+            />
         </>
     );
 }
