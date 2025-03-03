@@ -1,9 +1,9 @@
 "use client"
 import { Form, Input, Button } from "@heroui/react";
-import { useState } from "react";
-import withAuth from "@/components/withAuth";
+import { use, useState } from "react";
 import { useLogin } from "./loginHooks/hook";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 interface errorInterface {
     email: string,
@@ -11,14 +11,14 @@ interface errorInterface {
     [key: string]: string
 }
 
-const CreateClients = () => {
+const LogIn = () => {
 
     const [password, setPassword] = useState("");
     const [submitted, setSubmitted] = useState<any>(null);
     const [errors, setErrors] = useState<errorInterface | undefined>({ email: "", password: "" });
 
     const { mutateAsync: logIn } = useLogin();
-
+    const router = useRouter();
     // Real-time password validation
     const getPasswordError = (value: string) => {
         if (value.length < 6) {
@@ -77,12 +77,14 @@ const CreateClients = () => {
             pending: "Loading...",
             success: "Logged in successfully",
             error: "Error logging in",
-        });
+        }).then(() => router.push("/Clients"))
+
+
     }
 
     return (
         <Form
-            className="w-full justify-center items-center space-y-4"
+            className="w-full h-full justify-center items-center space-y-4"
             validationErrors={errors}
             onReset={() => setSubmitted(null)}
             onSubmit={onSubmit}
@@ -140,4 +142,4 @@ const CreateClients = () => {
     );
 }
 
-export default withAuth(CreateClients)
+export default LogIn

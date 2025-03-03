@@ -21,14 +21,14 @@ declare module "@react-types/shared" {
     >;
   }
 }
-const queryClient = new QueryClient()
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
+  const queryClient = new QueryClient()
 
   return (
 
-    <QueryClientProvider client={queryClient}>
+    <>
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -42,10 +42,13 @@ export function Providers({ children, themeProps }: ProvidersProps) {
         theme="dark"
         transition={Bounce}
       />
-      <HeroUIProvider navigate={router.push}>
-        <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
-      </HeroUIProvider>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <HeroUIProvider navigate={router.push}>
+          <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+        </HeroUIProvider>
+      </QueryClientProvider>
+    </>
+
 
   );
 }
